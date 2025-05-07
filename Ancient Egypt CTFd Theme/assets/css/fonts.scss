@@ -1,0 +1,32 @@
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts" !default;
+$fa-font-display: auto !default;
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/regular.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+
+@import "~typeface-lato/index.css";
+@import "~typeface-raleway/index.css";
+
+// Import IM Fell English SC from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap');
+
+// Import Noto Sans Egyptian Hieroglyphs font from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&display=swap');
+
+// Egyptian theme CSS variables
+:root {
+  --egyptian-blue: #104E8B;
+  --egyptian-gold: #D4AF37;
+  --egyptian-sand: #E8D0A9;
+  --papyrus: #F5E7C1;
+}
+
+// Hieroglyph class for consistent styling
+.hieroglyph {
+  font-family: 'Noto Sans Egyptian Hieroglyphs', sans-serif;
+  color: var(--egyptian-gold);
+  font-size: 1.2em;
+  margin: 0 5px;
+  font-weight: bold;
+}

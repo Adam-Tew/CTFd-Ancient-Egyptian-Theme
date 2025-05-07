@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block stylesheets %}
+<style>
+body {
+    padding-top: 56px;
+    margin: 0;
+}
+
+/* Main content area with background image */
+main[role="main"] {
+    position: relative;
+    background-image: url('/themes/core/static/img/create.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+}
+
+.jumbotron {
+    background-image: url('/themes/core/static/img/banner.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin: 0;
+    padding: 4.25rem;
+    border-top: 2px solid var(--egyptian-gold);
+    border-bottom: 4px solid var(--egyptian-gold);
+    text-align: center;
+}
+
+.jumbotron::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(16, 78, 139, 0.5);
+}
+
+.jumbotron h1 {
+    position: relative;
+    z-index: 1;
+    color: var(--egyptian-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin: 0 auto;
+}
+
+.content-box {
+    background-color: rgba(245, 231, 193, 0.85);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1140px; /* Match Bootstrap container width */
+}
+
+@media (max-width: 1200px) {
+    .content-box {
+        max-width: 960px;
+    }
+}
+
+@media (max-width: 992px) {
+    .content-box {
+        max-width: 720px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-box {
+        max-width: 540px;
+    }
+}
+
+.form-control {
+    background-color: var(--egyptian-sand);
+    border: 2px solid var(--egyptian-gold);
+    padding: 10px 15px;
+    font-size: 1rem;
+    color: var(--egyptian-blue);
+    margin-bottom: 15px;
+}
+
+.form-control:focus {
+    border-color: var(--egyptian-blue);
+    box-shadow: 0 0 0 0.2rem rgba(16, 78, 139, 0.25);
+    background-color: var(--papyrus);
+}
+
+.form-group label {
+    color: var(--egyptian-blue);
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    font-family: 'IM Fell English SC', serif;
+}
+
+.create-team-form {
+    background-color: rgba(245, 231, 193, 0.95);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.royal-instructions {
+    background-color: rgba(212, 175, 55, 0.15);
+    border-left: 4px solid var(--egyptian-gold);
+    padding: 15px;
+    margin: 15px 0;
+    color: var(--egyptian-blue);
+    font-style: italic;
+}
+
+.btn-royal {
+    background-color: var(--egyptian-blue);
+    color: var(--egyptian-gold);
+    border: 2px solid var(--egyptian-gold);
+    padding: 10px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: 'IM Fell English SC', serif;
+}
+
+.btn-royal:hover {
+    background-color: var(--egyptian-gold);
+    color: var(--egyptian-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.egyptian-footer {
+    margin-top: auto;
+    margin-bottom: 0;
+    border-top: 4px solid var(--egyptian-gold);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1><span class="hieroglyph">𓆣</span> Establish a Royal House <span class="hieroglyph">𓆣</span></h1>
+</div>
+
+<div class="content-box">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="create-team-form">
+                <h3 class="text-center mb-4" style="color: var(--egyptian-blue);">
+                    <span class="hieroglyph">𓁢</span> Royal House Declaration <span class="hieroglyph">𓁢</span>
+                </h3>
+                
+                {% include "components/errors.html" %}
+                
+                {% with form = Forms.teams.TeamRegisterForm() %}
+                {% from "macros/forms.html" import render_extra_fields %}
+                <form method="POST">
+                    <div class="form-group">
+                        <b>{{ form.name.label }}</b>
+                        {{ form.name(class="form-control", placeholder="Enter a noble name for your Royal House") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <b>{{ form.password.label }}</b>
+                        {{ form.password(class="form-control", placeholder="Create a secret password to protect your dynasty") }}
+                    </div>
+                    
+                    {{ render_extra_fields(form.extra) }}
+                    
+                    <div class="royal-instructions">
+                        <p><span class="hieroglyph">𓂝</span> Once your Royal House is established, share the name and secret password with your fellow scribes so they may join your noble quest.</p>
+                    </div>
+                    
+                    <div class="row pt-3">
+                        <div class="col-md-12 text-right">
+                            {{ form.submit(class="btn btn-royal", value="Establish Royal House") }}
+                        </div>
+                    </div>
+                    
+                    {{ form.nonce() }}
+                </form>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ Configs.ctf_name }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ Configs.ctf_small_icon }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('views.themes', path='css/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('views.themes', path='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('views.themes', path='css/core.css') }}">
+    <!-- Add Google Fonts for IM Fell English SC and Noto Sans Egyptian Hieroglyphs -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&display=swap">
+    
+<style>
+    :root {
+        --egyptian-blue: #104E8B;
+        --egyptian-gold: #D4AF37;
+        --egyptian-sand: #E8D0A9;
+        --papyrus: #F5E7C1;
+    }
+
+	html, body, p, h1, h2, h3, h4, h5, h6, div:not(.hieroglyph):not(.hieroglyphic-message), span:not(.hieroglyph), a, button, input, select, textarea, table, th, td, li, ul, ol {
+	    font-family: 'IM Fell English SC', serif !important;
+	}
+
+	.hieroglyph, .hieroglyphic-message, 
+	[class*="hieroglyph-"], 
+	.category-header::before, 
+	.category-header::after, 
+	.challenge-button::after, 
+	.solved-challenge::before {
+	    font-family: 'Noto Sans Egyptian Hieroglyphs', sans-serif !important;
+	}
+
+    /* Class for hieroglyphic symbols */
+    .hieroglyph {
+        font-family: 'Noto Sans Egyptian Hieroglyphs', sans-serif;
+        color: var(--egyptian-gold);
+        font-size: 1.2em;
+        margin: 0 5px;
+        font-weight: bold;
+    }
+
+    body {
+        font-family: 'IM Fell English SC', serif;
+        color: #333;
+        padding-top: 70px;
+    }
+
+/* Center navbar elements with pharaoh icon in the middle */
+.navbar .container {
+    display: flex;
+    position: relative;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.navbar-brand {
+    position: relative;
+    z-index: 20;
+    margin-right: 20px;
+    padding-left: 15px;
+}
+
+.navbar-toggler {
+    position: absolute;
+    right: 15px;
+    z-index: 20;
+}
+
+.nav-separator {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    margin: 0;
+}
+
+.navbar-collapse {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.navbar-nav.mr-auto {
+    display: flex;
+    width: calc(50% - 50px); /* Half minus half the icon width */
+    justify-content: flex-end; /* Push items toward pharaoh */
+    margin-right: 0;
+    padding-right: 150px; /* Less space before the pharaoh icon */
+}
+
+.navbar-nav.ml-md-auto {
+    display: flex;
+    width: calc(50% - 50px); /* Half minus half the icon width */
+    justify-content: space-between;
+    margin-left: 0;
+    padding-left: 5px; /* Less space after the pharaoh icon */
+    padding-right: 20px; /* Add space on right edge to prevent touching */
+}
+
+.navbar-nav.mr-auto .nav-item {
+    margin-left: 25px; /* Consistent spacing between left items */
+}
+
+.navbar-nav.ml-md-auto .nav-item {
+    flex: 0 1 auto; /* Allow items to shrink if needed */
+    text-align: center;
+    margin: 0 2px;
+}
+
+.nav-link {
+    color: var(--egyptian-gold) !important;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.5rem 0.4rem;
+    transition: color 0.3s;
+    font-size: 0.92rem; /* Slightly smaller font */
+}
+
+.navbar-nav.mr-auto .nav-item:last-child .nav-link {
+    padding-right: 0.2rem; /* Reduce padding on last left item */
+}
+
+.navbar-nav.ml-md-auto .nav-item:first-child .nav-link {
+    padding-left: 0.2rem; /* Reduce padding on first right item */
+}
+
+.nav-link:hover {
+    color: var(--egyptian-sand) !important;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background-color: var(--egyptian-gold);
+    transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 80%;
+}
+
+.nav-link .fa, 
+.nav-link .fas,
+.nav-link .hieroglyph {
+    display: inline-block;
+    margin-right: 3px;
+}
+
+.pharaoh-icon {
+    height: 180px;
+    display: inline-block;
+    padding-top: 60px;
+}
+
+.navbar {
+    background-color: var(--egyptian-blue) !important;
+    border-bottom: 4px solid var(--egyptian-gold);
+    padding: 0.5rem 0;
+}
+
+.navbar .navbar-brand {
+    color: var(--egyptian-gold) !important;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 1199.98px) {
+    .nav-link {
+        padding: 0.5rem 0.2rem;
+        font-size: 0.85rem;
+    }
+    
+    .navbar-nav.mr-auto {
+        padding-right: 5px;
+    }
+    
+    .navbar-nav.ml-md-auto {
+        padding-left: 5px;
+        padding-right: 15px;
+    }
+    
+    .navbar-nav.mr-auto .nav-item {
+        margin-left: 15px; /* Reduced spacing on medium screens */
+    }
+    
+    .navbar-nav.mr-auto .nav-item:last-child .nav-link {
+        padding-right: 0;
+    }
+}
+
+/* For mobile devices */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: var(--egyptian-blue);
+        border-bottom: 4px solid var(--egyptian-gold);
+        padding: 10px;
+        z-index: 1000;
+        flex-direction: column;
+    }
+    
+    .navbar-nav.mr-auto,
+    .navbar-nav.ml-md-auto {
+        width: 100%;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+    }
+    
+    hr.d-sm-flex {
+        margin: 10px 0;
+        border-color: var(--egyptian-gold);
+        width: 100%;
+    }
+    
+    .nav-separator {
+        display: none;
+    }
+    
+    /* Fix for mobile brand positioning */
+    .navbar-brand {
+        position: relative;
+        left: 0;
+        margin-right: auto;
+    }
+    
+    .navbar-nav .nav-item {
+        margin: 5px 0;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .nav-link {
+        padding: 8px 15px;
+        display: block;
+        font-size: 1rem;
+        overflow: visible;
+    }
+}
+
+    .btn-primary {
+        background-color: var(--egyptian-blue) !important;
+        border: 2px solid var(--egyptian-gold) !important;
+    }
+
+    .btn-primary:hover {
+        background-color: #0D3D6E !important;
+        color: var(--egyptian-gold);
+    }
+
+    a {
+        color: var(--egyptian-blue);
+    }
+
+    a:hover {
+        color: #083057;
+    }
+
+    .table {
+        background-color: var(--papyrus);
+        border: 2px solid var(--egyptian-gold);
+    }
+
+    .table thead {
+        background-color: var(--egyptian-blue);
+        color: var(--egyptian-gold);
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(232, 208, 169, 0.4);
+    }
+
+    .card {
+        border: 2px solid var(--egyptian-gold);
+        background-color: var(--papyrus);
+    }
+
+    .card-header {
+        background-color: var(--egyptian-blue);
+        color: var(--egyptian-sand);
+    }
+
+    /* Custom Footer */
+    .egyptian-footer {
+        margin-top: 30px;
+        padding: 15px;
+        background-color: var(--egyptian-blue);
+        border-top: 4px solid var(--egyptian-gold);
+        color: var(--papyrus);
+        text-align: center;
+        width: 100%;
+    }
+
+    .hieroglyphic-message {
+        font-family: 'Noto Sans Egyptian Hieroglyphs', sans-serif;
+        font-size: 20px;
+        letter-spacing: 12px;
+        margin-bottom: 10px;
+        color: var(--egyptian-gold);
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        display: flex;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .footer-disclaimer {
+        font-family: 'IM Fell English SC', serif;
+        font-size: 14px;
+    }
+
+    .form-control {
+        background-color: var(--egyptian-sand);
+        border: 1px solid var(--egyptian-gold);
+    }
+
+    .form-control:focus {
+        border-color: var(--egyptian-blue);
+        box-shadow: 0 0 0 0.2rem rgba(16, 78, 139, 0.25);
+    }
+
+    .modal {
+        z-index: 1050;
+    }
+
+    .modal-dialog {
+        margin-top: 100px;
+    }
+
+    .modal-content {
+        background-color: var(--papyrus);
+        border: 3px solid var(--egyptian-gold);
+        position: relative;
+        z-index: 1055;
+    }
+
+    .modal-header {
+        background-color: var(--egyptian-blue);
+        color: var(--egyptian-sand);
+        border-bottom: 2px solid var(--egyptian-gold);
+    }
+
+    .modal-footer {
+        border-top: 2px solid var(--egyptian-gold);
+    }
+
+    .modal-backdrop {
+        z-index: 1040;
+        opacity: 0.7 !important;
+        background-color: #000;
+    }
+
+    .modal-footer .btn,
+    .modal-body .btn,
+    .modal-body a,
+    .modal-body input,
+    .modal-body button {
+        position: relative;
+        z-index: 1060;
+    }
+
+    .spinner {
+        color: var(--egyptian-blue);
+    }
+</style>
+    {% block stylesheets %}
+    {% endblock %}
+
+    {{ Plugins.styles }}
+    <script type="text/javascript">
+        var init = {
+            'urlRoot': "{{ request.script_root }}",
+            'csrfNonce': "{{ Session.nonce }}",
+            'userMode': "{{ Configs.user_mode }}",
+            'userId': {{ Session.id }},
+            'userName': {{ User.name | tojson }},
+            'userEmail': {{ User.email | tojson }},
+            'teamId': {{ Team.id | tojson }}, 
+            'teamName': {{ Team.name | tojson }},
+            'start': {{ Configs.start | tojson }},
+            'end': {{ Configs.end | tojson }},
+            'theme_settings': {{ Configs.theme_settings | tojson }}
+        }
+    </script>
+    {{ Configs.theme_header }}
+</head>
+<body>
+    {% include "components/navbar.html" %}
+
+    <main role="main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <div class="egyptian-footer">
+        <div class="hieroglyphic-message">𓆺 𓅴 𓋪 𓆟 𓌮 𓌩 𓆣 𓊢 𓊢 𓊢 𓆺 𓂆 𓁹 𓂀 𓌩 𓎿 𓋝 𓎿 𓍄 𓃟 𓌷 𓅿 𓌩 𓌩 𓁹 𓃟 𓆑 𓊘 𓋝 𓎿 𓃟 𓍵 𓅿 𓍓 𓃟 𓍓 𓍶 𓅡</div>
+        <div class="footer-disclaimer">© 2025 Ancient Egypt Edition CTF</div>
+    </div>
+
+    <script defer src="{{ url_for('views.themes', path='js/vendor.bundle.js') }}"></script>
+    <script defer src="{{ url_for('views.themes', path='js/core.js') }}"></script>
+    <script defer src="{{ url_for('views.themes', path='js/helpers.js') }}"></script>
+
+    {% block entrypoint %}
+    <script defer src="{{ url_for('views.themes', path='js/pages/main.js') }}"></script>
+    {% endblock %}
+
+    {% block scripts %}
+    {% endblock %}
+
+    {{ Plugins.scripts }}
+
+    {{ Configs.theme_footer }}
+</body>
+</html>

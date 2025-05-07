@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<style>
+body {
+    padding-top: 0 !important;
+    background-color: transparent;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050; /* Ensure navbar stays on top */
+}
+
+/* Main content area with background image */
+main[role="main"] {
+    position: relative;
+    background-image: url('/themes/core/static/img/notifications.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+    /* Space for navbar */
+    padding-top: 56px; /* Height of the navbar */
+    /* Space for footer - adjust value based on footer height */
+    padding-bottom: 0; /* No bottom padding, footer will push content up */
+    margin-bottom: 0; /* No margin to ensure no gaps */
+}
+
+/* Jumbotron positioned directly below navbar */
+.jumbotron {
+    background-image: url('/themes/core/static/img/banner.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin: 0; /* Remove all margins */
+    padding: 4rem;
+    border-top: 2px solid var(--egyptian-gold);
+    border-bottom: 4px solid var(--egyptian-gold);
+    width: 100%; /* Ensure it spans full width */
+}
+
+.jumbotron::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(16, 78, 139, 0.5);
+}
+
+.jumbotron h1 {
+    position: relative;
+    z-index: 1;
+    color: var(--egyptian-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.main-content {
+    flex: 1; /* Take up remaining space */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px 0; /* Add some vertical spacing */
+}
+
+.content-container {
+    background-color: rgba(245, 231, 193, 0.85); /* Slightly transparent papyrus color */
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px; /* Reduced to minimize white space */
+}
+
+.egyptian-footer {
+    width: 100%;
+    margin-top: auto; /* Push to bottom */
+    position: relative; /* Ensure it's in the document flow */
+    z-index: 10; /* Higher than content but lower than navbar */
+}
+
+/* Notification card styling */
+.card {
+    border: 2px solid var(--egyptian-gold);
+    margin-bottom: 20px;
+}
+
+.card-body {
+    background-color: rgba(245, 231, 193, 0.9);
+}
+
+.card-title {
+    color: var(--egyptian-blue);
+    border-bottom: 1px solid var(--egyptian-gold);
+    padding-bottom: 10px;
+}
+
+.blockquote {
+    border-left: 4px solid var(--egyptian-gold);
+    padding-left: 15px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1><span class="hieroglyph">𓃀</span> Notifications <span class="hieroglyph">𓃀</span></h1>
+    </div>
+</div>
+<div class="main-content">
+    <div class="container">
+        <div class="content-container">
+            {% if not notifications %}
+            <h2 class="text-center">There are no notifications yet</h2>
+            {% endif %}
+            {% for notification in notifications %}
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">{{ notification.title }}</h3>
+                    <blockquote class="blockquote mb-0">
+                        <p>{{ notification.html }}</p>
+                        <small class="text-muted"><span data-time="{{ notification.date | isoformat }}"></span></small>
+                    </blockquote>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block entrypoint %}
+    <script defer src="{{ url_for('views.themes', path='js/pages/notifications.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block stylesheets %}
+<style>
+/* Reset padding to remove gaps */
+body {
+    padding-top: 56px;
+    margin: 0;
+}
+
+/* Main content area with background image */
+main[role="main"] {
+    position: relative;
+    background-image: url('/themes/core/static/img/startteam.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+}
+
+.jumbotron {
+    background-image: url('/themes/core/static/img/banner.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin: 0;
+    padding: 4.25rem;
+    border-top: 2px solid var(--egyptian-gold);
+    border-bottom: 4px solid var(--egyptian-gold);
+    text-align: center;
+}
+
+.jumbotron::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(16, 78, 139, 0.5);
+}
+
+.jumbotron h1 {
+    position: relative;
+    z-index: 1;
+    color: var(--egyptian-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin: 0 auto;
+}
+
+/* Style for content container */
+.content-box {
+    background-color: rgba(245, 231, 193, 0.85);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1140px; /* Match Bootstrap container width */
+}
+
+@media (max-width: 1200px) {
+    .content-box {
+        max-width: 960px;
+    }
+}
+
+@media (max-width: 992px) {
+    .content-box {
+        max-width: 720px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-box {
+        max-width: 540px;
+    }
+}
+
+/* Team selection container styling */
+.team-selection-box {
+    background-color: rgba(245, 231, 193, 0.95);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.team-selection-box p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--egyptian-blue);
+}
+
+/* Button styling */
+.royal-btn {
+    background-color: var(--egyptian-blue);
+    color: var(--egyptian-gold);
+    border: 2px solid var(--egyptian-gold);
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+    font-family: 'IM Fell English SC', serif;
+}
+
+.royal-btn:hover {
+    background-color: var(--egyptian-gold);
+    color: var(--egyptian-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer styling */
+.egyptian-footer {
+    margin-top: auto;
+    margin-bottom: 0;
+    border-top: 4px solid var(--egyptian-gold);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1><span class="hieroglyph">𓁢</span> Join a Royal House <span class="hieroglyph">𓁢</span></h1>
+</div>
+
+<div class="content-box">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="team-selection-box">
+                <p>Welcome, noble scribe, to the sacred halls of {{ Configs.ctf_name }}!</p>
+                <p>
+                    To begin your journey through the ancient trials, you must either join an existing Royal House or establish your own dynasty.
+                </p>
+                
+                {% if integrations.mlc() %}
+                <div class="row mt-4">
+                    <div class="col-md-8 offset-md-2">
+                        <a class="btn royal-btn w-100" href="{{ url_for('auth.oauth_login') }}">
+                            <span class="hieroglyph">𓂋</span> Join with Official Royal House
+                        </a>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <a class="btn royal-btn w-100" href="{{ url_for('teams.join') }}">
+                            <span class="hieroglyph">𓃀</span> Join Existing Royal House
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn royal-btn w-100" href="{{ url_for('teams.new') }}">
+                            <span class="hieroglyph">𓆣</span> Establish New Royal House
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <a class="btn royal-btn w-100" href="{{ url_for('teams.join') }}">
+                            <span class="hieroglyph">𓃀</span> Join Existing Royal House
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn royal-btn w-100" href="{{ url_for('teams.new') }}">
+                            <span class="hieroglyph">𓆣</span> Establish New Royal House
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

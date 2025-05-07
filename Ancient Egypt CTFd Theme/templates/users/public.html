@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<style>
+/* Update these CSS rules */
+body {
+    padding-top: 56px; /* Changed from 70px to 0 */
+    margin: 0;
+}
+
+main[role="main"] {
+    background-image: url('/themes/core/static/img/userp.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh; /* Changed from calc(100vh - 70px) to 100vh */
+    display: flex; /* Added */
+    flex-direction: column; /* Added */
+    padding: 0; /* Added */
+    margin: 0; /* Added */
+}
+
+.jumbotron {
+    background-image: url('/themes/core/static/img/banner.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin: 0;
+    padding: 4.25rem; /* Use 4.25rem to match your fixed teams.html */
+    border-top: 2px solid var(--egyptian-gold);
+    border-bottom: 4px solid var(--egyptian-gold);
+    text-align: center;
+}
+
+.jumbotron::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(16, 78, 139, 0.5);
+}
+
+.jumbotron h1 {
+    position: relative;
+    z-index: 1;
+    color: var(--egyptian-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin: 0 auto;
+}
+
+.content-box {
+    background-color: rgba(245, 231, 193, 0.85);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1140px; /* Match Bootstrap container width */
+}
+
+@media (max-width: 1200px) {
+    .content-box {
+        max-width: 960px;
+    }
+}
+
+@media (max-width: 992px) {
+    .content-box {
+        max-width: 720px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-box {
+        max-width: 540px;
+    }
+}
+.team-info {
+    background-color: rgba(245, 231, 193, 0.95);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.table {
+    background-color: var(--papyrus);
+    border: 2px solid var(--egyptian-gold);
+}
+
+.badge-primary {
+    background-color: var(--egyptian-blue) !important;
+    border: 1px solid var(--egyptian-gold);
+}
+
+.badge-secondary {
+    background-color: var(--egyptian-sand) !important;
+    color: var(--egyptian-blue) !important;
+    border: 1px solid var(--egyptian-gold);
+}
+
+#keys-pie-graph, #categories-pie-graph, #score-graph {
+    background-color: rgba(245, 231, 193, 0.9);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.award-icon {
+    color: var(--egyptian-gold);
+}
+
+.egyptian-footer {
+    margin-top: 0;
+    border-top: 4px solid var(--egyptian-gold);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1><span class="hieroglyph">𓀀</span> {{ user.name }} <span class="hieroglyph">𓀀</span></h1>
+</div>
+
+<div class="content-box">
+    {% if user.team_id %}
+    <div class="team-info">
+        <h3 class="text-center">
+            <a href="{{ url_for('teams.public', team_id=user.team_id) }}">
+                <span class="badge badge-secondary">
+                    <span class="hieroglyph">𓁢</span> Royal House: {{ user.team.name }}
+                </span>
+            </a>
+        </h3>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            {% if user.oauth_id %}
+                <a href="https://majorleaguecyber.org/u/{{ user.name }}" class="d-inline-block mr-2">
+                    <span class="badge badge-primary"><span class="hieroglyph">𓂋</span> Official</span>
+                </a>
+            {% endif %}
+
+            {% if user.affiliation %}
+                <span class="badge badge-primary d-inline-block mr-2"><span class="hieroglyph">𓊖</span> {{ user.affiliation }}</span>
+            {% endif %}
+
+            {% if user.country %}
+                <span class="badge badge-primary d-inline-block mr-2">
+                    <i class="flag-{{ user.country.lower() }}"></i>
+                    <span class="hieroglyph">𓊽</span> {{ lookup_country_code(user.country) }}
+                </span>
+            {% endif %}
+
+            {% for field in user.fields %}
+                <div class="d-block mt-2">
+                    {{ field.name }}: {{ field.value }}
+                </div>
+            {% endfor %}
+
+            {% if user.website %}
+                <div class="mt-3">
+                    <a href="{{ user.website }}" target="_blank" style="color: var(--egyptian-blue);" rel="noopener">
+                        <i class="fas fa-external-link-alt pr-1"></i> Scribe's Scroll
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4 text-center">
+            {% if account.place %}
+                <h3>
+                    <span class="hieroglyph">𓊖</span> {{ account.place }} <small>place</small>
+                </h3>
+            {% endif %}
+            
+            {% if account.place %}
+                <h3>
+                    <span class="hieroglyph">𓏏</span> {{ account.score }} <small>points</small>
+                </h3>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include "components/errors.html" %}
+
+    {% set solves = user.solves %}
+    {% set awards = user.awards %}
+    {% if solves or awards %}
+        <div class="row">
+            <div class="col-md-6 d-none d-md-block d-lg-block">
+                <div id="keys-pie-graph" class="d-flex align-items-center">
+                    <div class="text-center w-100">
+                        <i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 d-none d-md-block d-lg-block">
+                <div id="categories-pie-graph" class="d-flex align-items-center">
+                    <div class="text-center w-100">
+                        <i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 d-none d-md-block d-lg-block">
+                <div id="score-graph" class="w-100 d-flex align-items-center">
+                    <div class="text-center w-100">
+                        <i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3><span class="hieroglyph">𓏏</span> Awards <span class="hieroglyph">𓏏</span></h3>
+            </div>
+            {% for award in awards %}
+                <div class="col-md-3 col-sm-6">
+                    <p class="text-center">
+                        <i class="award-icon award-{{ award.icon }} fa-2x"></i>
+                        <br>
+                        <strong>{{ award.name }}</strong>
+                    </p>
+                    <p class="text-center">{{ award.category or "" }}</p>
+                    <p class="text-center">{{ award.description or "" }}</p>
+                    <p class="text-center">{{ award.value }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3><span class="hieroglyph">𓏃</span> Scribe's Achievements <span class="hieroglyph">𓏃</span></h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <td><b>Challenge</b></td>
+                        <td class="d-none d-md-block d-lg-block"><b>Category</b></td>
+                        <td><b>Value</b></td>
+                        <td><b>Time</b></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for solve in solves %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('challenges.listing') }}#{{ solve.challenge.name }}-{{ solve.challenge.id }}">
+                                    {{ solve.challenge.name }}
+                                </a>
+                            </td>
+                            <td class="d-none d-md-block d-lg-block">{{ solve.challenge.category }}</td>
+                            <td>{{ solve.challenge.value }}</td>
+                            <td class="solve-time">
+                                <span data-time="{{ solve.date | isoformat }}"></span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="row min-vh-25">
+            <h3 class="opacity-50 text-center w-100 justify-content-center align-self-center">
+                <span class="hieroglyph">𓂧</span> This scribe has no achievements yet <span class="hieroglyph">𓂧</span>
+            </h3>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        var stats_data = {{ {
+            'type': 'user',
+            'id': user.id,
+            'name': user.name,
+            'account_id': user.id,
+        } | tojson }};
+    </script>
+    <script defer src="{{ url_for('views.themes', path='js/echarts.bundle.js') }}"></script>
+    <script defer src="{{ url_for('views.themes', path='js/graphs.js') }}"></script>
+{% endblock %}
+
+{% block entrypoint %}
+    <script defer src="{{ url_for('views.themes', path='js/pages/stats.js') }}"></script>
+{% endblock %}

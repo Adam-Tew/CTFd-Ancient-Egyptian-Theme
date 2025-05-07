@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block stylesheets %}
+<style>
+.index-container {
+    height: 100vh; /* Full viewport height */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url('/themes/core/static/img/index.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* This makes the image fixed */
+    margin-top: -70px; /* To offset the navbar padding-top */
+    padding-top: 70px; /* To ensure content doesn't go under navbar */
+    margin-bottom: -100px; /* To offset the footer height (adjust based on your footer) */
+    padding-bottom: 54px; /* To ensure content doesn't go under footer */
+}
+body.is-index {
+    background-color: transparent !important;
+}
+body.is-index main[role="main"] {
+    background-color: transparent !important;
+    padding: 0;
+}
+.index-content {
+    background-color: rgba(16, 78, 139, 0.8);
+    padding: 30px;
+    border: 3px solid var(--egyptian-gold);
+    border-radius: 10px;
+    max-width: 800px;
+    text-align: center;
+    margin: 0 20px;
+}
+.discord-box {
+    background-color: rgba(114, 137, 218, 0.9); /* Discord color */
+    padding: 15px;
+    border: 3px solid var(--egyptian-gold);
+    border-radius: 10px;
+    max-width: 800px;
+    text-align: center;
+    margin: 0 20px 20px 20px;
+}
+.discord-box p {
+    color: white;
+    font-size: 1.2rem;
+    margin: 0;
+}
+.discord-box a {
+    color: var(--egyptian-gold);
+    font-weight: bold;
+    text-decoration: underline;
+    transition: all 0.3s ease;
+}
+.discord-box a:hover {
+    color: #ffea80;
+    text-shadow: 0 0 8px var(--egyptian-gold);
+}
+.index-content h1 {
+    color: var(--egyptian-gold);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+.index-content p {
+    color: var(--papyrus);
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+.explore-button {
+    background-color: var(--egyptian-gold);
+    color: var(--egyptian-blue);
+    border: 2px solid var(--egyptian-blue);
+    padding: 10px 25px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+.explore-button:hover {
+    background-color: var(--egyptian-blue);
+    color: var(--egyptian-gold);
+    border-color: var(--egyptian-gold);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.content-container {
+    padding: 30px;
+}
+</style>
+{% endblock %}
+{% block content %}
+    {% if request.path == '/index' or request.path == '/' %}
+        <div class="index-container">
+            <div class="discord-box">
+                <p>Join our Discord <a href="https://discord.gg/c9CJ6caRbN" target="_blank">[DISCORD_LINK_HERE]</a></p>
+            </div>
+            <div class="index-content">
+                <h1><span class="hieroglyph">𓇯</span> Welcome to Ancient Egypt <span class="hieroglyph">𓇯</span></h1>
+                <p>Welcome, dreary traveler, to the land of Ancient Egypt where the pyramids stand tall and the Nile flows strong. Step onto the warm sand and discover the secrets of this mythical place of pharaohs and mythology. Only the wisest among you will uncover the ancient mysteries hidden within.</p>
+                <a href="{{ url_for('challenges.listing') }}" class="btn explore-button">Begin Your Journey</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="container content-container">
+            {{ content | safe }}
+        </div>
+    {% endif %}
+{% endblock %}
+{% block body_class %}
+    {% if request.path == '/index' or request.path == '/' %}is-index{% endif %}
+{% endblock %}

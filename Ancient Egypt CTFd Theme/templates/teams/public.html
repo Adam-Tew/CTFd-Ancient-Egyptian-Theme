@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<style>
+body {
+    padding-top: 0;
+    margin: 0;
+}
+
+/* Main content area with background image */
+main[role="main"] {
+    position: relative;
+    background-image: url('/themes/core/static/img/teamp.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 5;
+    margin: 0;
+}
+
+.jumbotron {
+    background-image: url('/themes/core/static/img/banner.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin: 0;
+    padding: 4.25rem; /* Increased from 4rem to 4.25rem */
+    border-top: 2px solid var(--egyptian-gold);
+    border-bottom: 4px solid var(--egyptian-gold);
+    text-align: center;
+}
+
+.jumbotron::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(16, 78, 139, 0.5);
+}
+
+.jumbotron h1 {
+    position: relative;
+    z-index: 1;
+    color: var(--egyptian-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin: 0 auto;
+}
+.content-box {
+    background-color: rgba(245, 231, 193, 0.85);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1140px; /* Match Bootstrap container width */
+}
+
+@media (max-width: 1200px) {
+    .content-box {
+        max-width: 960px;
+    }
+}
+
+@media (max-width: 992px) {
+    .content-box {
+        max-width: 720px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-box {
+        max-width: 540px;
+    }
+}
+
+.table {
+    background-color: var(--papyrus);
+    border: 2px solid var(--egyptian-gold);
+}
+
+.badge-primary {
+    background-color: var(--egyptian-blue) !important;
+    border: 1px solid var(--egyptian-gold);
+}
+
+#keys-pie-graph, #categories-pie-graph, #score-graph {
+    background-color: rgba(245, 231, 193, 0.9);
+    border: 2px solid var(--egyptian-gold);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.award-icon {
+    color: var(--egyptian-gold);
+}
+
+.egyptian-footer {
+    margin-top: auto;
+    margin-bottom: 0;
+    border-top: 4px solid var(--egyptian-gold);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 id="team-id" team-id="{{ team.id }}"><span class="hieroglyph">𓁢</span> {{ team.name }} <span class="hieroglyph">𓁢</span></h1>
+</div>
+
+<div class="content-box">
+    {% include "components/errors.html" %}
+
+    <div class="row">
+        <div class="col-md-6">
+            {% if team.oauth_id %}
+                <a href="https://majorleaguecyber.org/t/{{ team.name }}">
+                    <span class="badge badge-primary"><span class="hieroglyph">𓂋</span> Official</span>
+                </a>
+            {% endif %}
+            
+            {% if team.affiliation %}
+                <span class="badge badge-primary"><span class="hieroglyph">𓊖</span> {{ team.affiliation }}</span>
+            {% endif %}
+            
+            {% if team.country %}
+                <span class="badge badge-primary">
+                    <i class="flag-{{ team.country.lower() }}"></i>
+                    <span class="hieroglyph">𓊽</span> {{ lookup_country_code(team.country) }}
+                </span>
+            {% endif %}
+            
+            {% for field in team.fields %}
+                <div class="d-block mt-2">
+                    {{ field.name }}: {{ field.value }}
+                </div>
+            {% endfor %}
+            
+            {% if team.website and (team.website.startswith('http://') or team.website.startswith('https://')) %}
+                <div class="mt-3">
+                    <a href="{{ team.website }}" target="_blank" style="color: var(--egyptian-blue);" rel="noopener">
+                        <i class="fas fa-external-link-alt pr-1"></i> Royal Scroll
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6 text-center">
+            {% if scores_visible() %}
+                {% if place %}
+                    <h2 id="team-place">
+                        <span class="hieroglyph">𓊖</span> {{ place }}
+                        <small>place</small>
+                    </h2>
+                {% endif %}
+            {% endif %}
+            
+            {% if score %}
+                <h2 id="team-score">
+                    <span class="hieroglyph">𓏏</span> {{ score }}
+                    <small>points</small>
+                </h2>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3><span class="hieroglyph">𓀀</span> Royal House Members <span class="hieroglyph">𓀀</span></h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <td><b>User Name</b></td>
+                    <td><b>Score</b></td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for member in team.members %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('users.public', user_id=member.id) }}">
+                                {{ member.name }}
+                            </a>
+                        </td>
+                        <td>{{ member.score }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if solves or awards %}
+        <div class="row">
+            <div class="col-md-6 d-none d-md-block d-lg-block">
+                <div id="keys-pie-graph" class="d-flex align-items-center">
+                    <div class="text-center w-100">
+                        <i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 d-none d-md-block d-lg-block">
+                <div id="categories-pie-graph" class="d-flex align-items-center">
+                    <div class="text-center w-100">
+                        <i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 d-none d-md-block d-lg-block">
+                <div id="score-graph" class="w-100 d-flex align-items-center">
+                    <div class="text-center w-100">
+                        <i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if awards %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h3><span class="hieroglyph">𓏏</span> Royal Honors <span class="hieroglyph">𓏏</span></h3>
+                </div>
+                {% for award in awards %}
+                    <div class="col-md-3 col-sm-6">
+                        <p class="text-center">
+                            <i class="award-icon award-{{ award.icon }} fa-2x"></i>
+                            <br>
+                            <strong>{{ award.name }}</strong>
+                        </p>
+                        {% if award.category %}<p class="text-center">{{ award.category }}</p>{% endif %}
+                        {% if award.description %}<p class="text-center">{{ award.description }}</p>{% endif %}
+                        <p class="text-center">{{ award.value }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3><span class="hieroglyph">𓏃</span> Royal House Achievements <span class="hieroglyph">𓏃</span></h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <td><b>Challenge</b></td>
+                        <td class="d-none d-md-block d-lg-block"><b>Category</b></td>
+                        <td><b>Value</b></td>
+                        <td><b>Time</b></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for solve in solves %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('challenges.listing') }}#{{ solve.challenge.name }}-{{ solve.challenge.id }}">
+                                    {{ solve.challenge.name }}
+                                </a>
+                            </td>
+                            <td class="d-none d-md-block d-lg-block">{{ solve.challenge.category }}</td>
+                            <td>{{ solve.challenge.value }}</td>
+                            <td class="solve-time">
+                                <span data-time="{{ solve.date | isoformat }}"></span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="row min-vh-25">
+            <h3 class="opacity-50 text-center w-100 justify-content-center align-self-center">
+                <span class="hieroglyph">𓂧</span> This Royal House has no achievements yet <span class="hieroglyph">𓂧</span>
+            </h3>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        var stats_data = {{ {
+            'type': 'team',
+            'id': team.id,
+            'name': team.name,
+            'account_id': team.id,
+        } | tojson }};
+    </script>
+    <script defer src="{{ url_for('views.themes', path='js/echarts.bundle.js') }}"></script>
+    <script defer src="{{ url_for('views.themes', path='js/graphs.js') }}"></script>
+{% endblock %}
+
+{% block entrypoint %}
+    {% if solves or awards %}
+        <script defer src="{{ url_for('views.themes', path='js/pages/stats.js') }}"></script>
+    {% endif %}
+{% endblock %}
